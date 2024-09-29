@@ -1,8 +1,6 @@
 package com.ai.aiml10.advices;
 
-
 import com.ai.aiml10.exceptions.ResourceNotFoundException;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,6 +55,4 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError , HttpStatus.BAD_REQUEST) ;
     }
-
-
 }

@@ -1,9 +1,9 @@
 package com.ai.aiml10.dto;
 
-import com.ai.aiml10.entity.AthleteEntity;
 import com.ai.aiml10.enums.Gender;
 import com.ai.aiml10.enums.Sport;
 import com.ai.aiml10.enums.Status;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,14 +12,21 @@ public class AthleteDTO {
 
     private String athletesID ;
 
+    @NotBlank
+    @Size(min = 2 , message = "Name must be of 2 letters at least")
     private String athletesName ;
 
+    @Min(value = 0, message = "Age must be greater than or equal to 0")
+    @Max(value = 120, message = "Age must be less than or equal to 120")
     private Integer age ;
 
+    @NotNull(message = "Gender is required")
     private Gender gender ;
 
+    @NotNull(message = "Sport is required")
     private Sport sport ;
 
+    @NotBlank(message = "Mobile number is required")
     private String mobileNum ;
 
     private List<String> bloodTestIds;              // List of blood test IDs4

@@ -3,6 +3,7 @@ package com.ai.aiml10.controller;
 import com.ai.aiml10.dto.AthleteDTO;
 import com.ai.aiml10.enums.Status;
 import com.ai.aiml10.service.AthleteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,8 +33,8 @@ public class AthleteController {
     }
 
     @GetMapping("/{athleteId}")
-    public AthleteDTO getAthleteById(@PathVariable("athleteId") String athleteId){
-        return athleteService.findAthleteById(athleteId);
+    public ResponseEntity<AthleteDTO> getAthleteById(@PathVariable("athleteId") String athleteId){
+        return ResponseEntity.ok(athleteService.findAthleteById(athleteId));
     }
 
     @PatchMapping("/{athletesID}")
