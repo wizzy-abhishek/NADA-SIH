@@ -11,7 +11,7 @@ public class BloodTestDTO {
     @NotBlank(message = "Blood Test ID cant be blank")
     private String testId;        // Unique identifier for the test
 
-    @NotBlank(message = "Athletes ID for respective BloodTest is mandatory")
+    @NotBlank(message = "Athletes ID for respective Blood Test is mandatory")
     private String athleteId;     // Reference to the Athlete
 
     @NotNull(message = "Blood Test date is required")
