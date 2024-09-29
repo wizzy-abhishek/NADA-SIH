@@ -30,7 +30,7 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
-		<!-- TensorFlow Dependencies -->
+<!--		&lt;!&ndash; TensorFlow Dependencies &ndash;&gt;
 		<dependency>
 			<groupId>org.tensorflow</groupId>
 			<artifactId>tensorflow-core-platform</artifactId>
@@ -41,8 +41,10 @@
 			<artifactId>tensorflow-core-api</artifactId>
 			<version>0.4.0</version>
 		</dependency>
+		-->
+<!--
 
-		<!-- Apache Spark Dependencies -->
+		&lt;!&ndash; Apache Spark Dependencies &ndash;&gt;
 		<dependency>
 			<groupId>org.apache.spark</groupId>
 			<artifactId>spark-core_2.13</artifactId>
@@ -61,7 +63,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Deeplearning4j Dependencies -->
+		&lt;!&ndash; Deeplearning4j Dependencies &ndash;&gt;
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
 			<artifactId>deeplearning4j-core</artifactId>
@@ -77,6 +79,7 @@
 			<artifactId>deeplearning4j-ui</artifactId>
 			<version>1.0.0-beta7</version>
 		</dependency>
+-->
 
 <!--
 		&lt;!&ndash; PostgreSQL &ndash;&gt;
@@ -110,8 +113,6 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.28</version>
-			<optional>true</optional>
 		</dependency>
 
 		<!-- Testing Dependencies -->

@@ -5,11 +5,13 @@ import com.ai.aiml10.entity.AthleteEntity;
 import com.ai.aiml10.entity.BiologicalPassportEntity;
 import com.ai.aiml10.enums.Sport;
 import com.ai.aiml10.enums.Status;
+import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.AthleteRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.module.ResolutionException;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
@@ -74,8 +76,9 @@ public class AthleteService {
     }
 
     public AthleteDTO updatePartialInfoOfAthlete(String athleteId, Map<String, Object> updateDetails) {
+
         AthleteEntity athlete = athleteRepo.findById(athleteId)
-                .orElseThrow(() -> new RuntimeException("Athlete not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Athlete not found with id : " + athleteId));
 
         updateDetails.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(AthleteEntity.class, key);
@@ -98,7 +101,7 @@ public class AthleteService {
 
     public AthleteDTO findAthleteById(String athleteId){
         System.out.println("In Athlete Service && inside findAthleteById");
-        return modelMapper.map(athleteRepo.findById(athleteId).orElse(null) , AthleteDTO.class);
+        return modelMapper.map(athleteRepo.findById(athleteId).orElseThrow(() ->new ResourceNotFoundException("Athlete not found with id : " + athleteId) ) , AthleteDTO.class);
     }
 
     public void updateAthleteEntity(AthleteDTO athleteDTO){

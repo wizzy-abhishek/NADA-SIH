@@ -31,8 +31,13 @@ public class AthleteController {
         return athleteService.getAllAthletes();
     }
 
+    @GetMapping("/{athleteId}")
+    public AthleteDTO getAthleteById(@PathVariable("athleteId") String athleteId){
+        return athleteService.findAthleteById(athleteId);
+    }
+
     @PatchMapping("/{athletesID}")
-    public  AthleteDTO updatePartially(@PathVariable String athletesID ,  @RequestBody Map<String, Object> updateDetails){
+    public AthleteDTO updatePartially(@PathVariable String athletesID ,  @RequestBody Map<String, Object> updateDetails){
         return athleteService.updatePartialInfoOfAthlete(athletesID , updateDetails) ;
     }
 
