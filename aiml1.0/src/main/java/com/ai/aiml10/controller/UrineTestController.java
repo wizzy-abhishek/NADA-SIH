@@ -3,6 +3,7 @@ package com.ai.aiml10.controller;
 import com.ai.aiml10.dto.UrineTestDTO;
 import com.ai.aiml10.enums.Status;
 import com.ai.aiml10.service.UrineTestService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,22 +19,22 @@ public class UrineTestController {
     }
 
     @GetMapping("/athlete/{athleteId}")
-    public List<UrineTestDTO> findAllUrineTestOfIndividualAthlete(@PathVariable String athleteId){
-        return urineTestService.findAllUrineTestOfIndividual(athleteId);
+    public ResponseEntity<List<UrineTestDTO>> findAllUrineTestOfIndividualAthlete(@PathVariable String athleteId){
+        return ResponseEntity.ok(urineTestService.findAllUrineTestOfIndividual(athleteId));
     }
 
     @GetMapping("/{urineTestId}")
-    public UrineTestDTO findParticularUrineTest(@PathVariable String urineTestId){
-        return urineTestService.findUrineTestById(urineTestId);
+    public ResponseEntity<UrineTestDTO> findParticularUrineTest(@PathVariable String urineTestId){
+        return ResponseEntity.ok(urineTestService.findUrineTestById(urineTestId));
     }
 
     @PostMapping
-    public UrineTestDTO addUrineTestRequest(@RequestBody UrineTestDTO urineTestDTO ){
-        return urineTestService.addNewUrineTest(urineTestDTO);
+    public ResponseEntity<UrineTestDTO> addUrineTestRequest(@RequestBody UrineTestDTO urineTestDTO ){
+        return ResponseEntity.ok(urineTestService.addNewUrineTest(urineTestDTO));
     }
 
     @GetMapping("/status/{status}")
-    public List<UrineTestDTO> getUrineTestByStatus(@PathVariable("status")Status status){
-        return urineTestService.findAllUrineTestByStatus(status);
+    public ResponseEntity<List<UrineTestDTO>> getUrineTestByStatus(@PathVariable("status")Status status){
+        return ResponseEntity.ok(urineTestService.findAllUrineTestByStatus(status));
     }
 }

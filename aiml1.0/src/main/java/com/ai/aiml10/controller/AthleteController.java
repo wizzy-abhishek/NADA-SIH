@@ -21,15 +21,13 @@ public class AthleteController {
 
     @PostMapping()
     public AthleteDTO addAthlete(@RequestBody AthleteDTO athleteDTO){
-
         System.out.println("In athlete controller");
-
         return athleteService.addNewAthlete(athleteDTO);
     }
 
     @GetMapping()
-    public List<AthleteDTO> getAllAthletes(){
-        return athleteService.getAllAthletes();
+    public ResponseEntity<List<AthleteDTO>>getAllAthletes(){
+        return ResponseEntity.ok(athleteService.getAllAthletes());
     }
 
     @GetMapping("/{athleteId}")
@@ -38,12 +36,12 @@ public class AthleteController {
     }
 
     @PatchMapping("/{athletesID}")
-    public AthleteDTO updatePartially(@PathVariable String athletesID ,  @RequestBody Map<String, Object> updateDetails){
-        return athleteService.updatePartialInfoOfAthlete(athletesID , updateDetails) ;
+    public ResponseEntity<AthleteDTO> updatePartially(@PathVariable String athletesID ,  @RequestBody Map<String, Object> updateDetails){
+        return ResponseEntity.ok(athleteService.updatePartialInfoOfAthlete(athletesID , updateDetails)) ;
     }
 
     @GetMapping("/status/{status}")
-    public List<AthleteDTO> getByStatus(@PathVariable("status") Status status){
-        return athleteService.findAllByStatus(status);
+    public ResponseEntity<List<AthleteDTO>> getByStatus(@PathVariable("status") Status status){
+        return ResponseEntity.ok(athleteService.findAllByStatus(status));
     }
 }

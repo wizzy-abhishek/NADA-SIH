@@ -2,6 +2,7 @@ package com.ai.aiml10.controller;
 
 import com.ai.aiml10.dto.BiologicalPassportDTO;
 import com.ai.aiml10.service.BiologicalPassportService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +16,8 @@ public class BiologicalPassportController {
     }
 
     @GetMapping("/{biologicalPassportId}")
-    public BiologicalPassportDTO getParticularBiologicalPassport(@PathVariable String biologicalPassportId){
-        return biologicalPassportService.getBiologicalPassport(biologicalPassportId);
+    public ResponseEntity<BiologicalPassportDTO> getParticularBiologicalPassport(@PathVariable String biologicalPassportId){
+        return ResponseEntity.ok(biologicalPassportService.getBiologicalPassport(biologicalPassportId)) ;
     }
 
 }
