@@ -16,7 +16,7 @@ public class AthleteDTO {
     @Size(min = 2 , message = "Name must be of 2 letters at least")
     private String athletesName ;
 
-    @Min(value = 0, message = "Age must be greater than or equal to 0")
+    @Min(value = 5, message = "Age must be greater than or equal to 5")
     @Max(value = 120, message = "Age must be less than or equal to 120")
     private Integer age ;
 

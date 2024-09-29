@@ -3,6 +3,7 @@ package com.ai.aiml10.controller;
 import com.ai.aiml10.dto.BloodTestDTO;
 import com.ai.aiml10.enums.Status;
 import com.ai.aiml10.service.BloodTestService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class BloodTestController {
     }
 
     @PostMapping
-    public ResponseEntity<BloodTestDTO> assignBloodTestToAthlete(@RequestBody BloodTestDTO bloodTestDTO){
+    public ResponseEntity<BloodTestDTO> assignBloodTestToAthlete(@RequestBody @Valid BloodTestDTO bloodTestDTO){
         return ResponseEntity.ok(bloodTestService.addNewBloodTest(bloodTestDTO)) ;
     }
 

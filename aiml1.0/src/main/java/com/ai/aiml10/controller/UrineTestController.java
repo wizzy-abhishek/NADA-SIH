@@ -3,6 +3,7 @@ package com.ai.aiml10.controller;
 import com.ai.aiml10.dto.UrineTestDTO;
 import com.ai.aiml10.enums.Status;
 import com.ai.aiml10.service.UrineTestService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class UrineTestController {
     }
 
     @PostMapping
-    public ResponseEntity<UrineTestDTO> addUrineTestRequest(@RequestBody UrineTestDTO urineTestDTO ){
+    public ResponseEntity<UrineTestDTO> addUrineTestRequest(@RequestBody @Valid UrineTestDTO urineTestDTO ){
         return ResponseEntity.ok(urineTestService.addNewUrineTest(urineTestDTO));
     }
 

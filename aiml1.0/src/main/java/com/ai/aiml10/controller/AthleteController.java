@@ -3,6 +3,8 @@ package com.ai.aiml10.controller;
 import com.ai.aiml10.dto.AthleteDTO;
 import com.ai.aiml10.enums.Status;
 import com.ai.aiml10.service.AthleteService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +22,10 @@ public class AthleteController {
     }
 
     @PostMapping()
-    public AthleteDTO addAthlete(@RequestBody AthleteDTO athleteDTO){
+    public ResponseEntity<AthleteDTO> addAthlete(@RequestBody @Valid AthleteDTO athleteDTO){
         System.out.println("In athlete controller");
-        return athleteService.addNewAthlete(athleteDTO);
+        AthleteDTO athleteDTOSaved = athleteService.addNewAthlete(athleteDTO);
+        return new ResponseEntity<>(athleteDTOSaved , HttpStatus.CREATED);
     }
 
     @GetMapping()
