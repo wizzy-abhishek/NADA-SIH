@@ -19,56 +19,58 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.
-                authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/error" , "/auth/**").permitAll()
-                        .requestMatchers("/athlete/**").hasAnyRole("USER" , "ADMIN")
-                        .requestMatchers("/biologicalPassport/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .cors(cors -> cors.disable())
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        httpSecurity
+                .csrf(csrfConfig -> csrfConfig.disable())
+                /*.cors(cors -> cors.disable())*/
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
+                    .requestMatchers( "/error" , "/auth/**").permitAll()
+                    .requestMatchers("/athlete/**").hasAnyRole("ADMIN" ,"USER")
+                    .requestMatchers("/biologicalPassport/**").hasRole("ADMIN")
+                    .anyRequest().permitAll())
+            .sessionManagement(sessionManagement -> sessionManagement
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 
-                /*.formLogin(Customizer.withDefaults());*/
-
+            //.formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();
-    }
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+            return new BCryptPasswordEncoder();
     }
 
- /*   @Bean
-    UserDetailsService inMemoryUserDetailService(){
-
-        UserDetails normalUser = User
-                .withUsername("Abhishek")
-                .password(passwordEncoder().encode("1234"))
-                .roles("USER")
-                .build();
-
-        UserDetails adminUser = User
-                .withUsername("Gargi")
-                .password(passwordEncoder().encode("Bubu"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(normalUser , adminUser);
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+            return authenticationConfiguration.getAuthenticationManager();
     }
+
+/*
+      @Bean
+        UserDetailsService inMemoryUserDetailService(){
+
+            UserDetails normalUser = User
+                    .withUsername("Abhishek")
+                    .password(passwordEncoder().encode("1234"))
+                    .roles("USER")
+                    .build();
+
+            UserDetails adminUser = User
+                    .withUsername("Gargi")
+                    .password(passwordEncoder().encode("Bubu"))
+                    .roles("ADMIN")
+                    .build();
+
+            return new InMemoryUserDetailsManager(normalUser , adminUser);
+        }
 */
 
 }

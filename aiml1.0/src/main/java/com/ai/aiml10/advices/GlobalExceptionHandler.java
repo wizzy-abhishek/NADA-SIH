@@ -3,6 +3,7 @@ package com.ai.aiml10.advices;
 import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,7 +19,7 @@ public class GlobalExceptionHandler {
 
         APIError apiError = new APIError();
 
-        apiError.setStatus(HttpStatus.NOT_FOUND);
+        apiError.setStatusCode(HttpStatus.NOT_FOUND);
         apiError.setError(exception.getMessage());
         apiError.getSubErrors().add(null);
 
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler {
 
         APIError apiError = new APIError();
 
-        apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        apiError.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         apiError.setError(exception.getMessage());
         apiError.getSubErrors().add(null);
 
@@ -49,10 +50,17 @@ public class GlobalExceptionHandler {
 
         APIError apiError = new APIError();
 
-        apiError.setStatus(HttpStatus.BAD_REQUEST);
+        apiError.setStatusCode(HttpStatus.BAD_REQUEST);
         apiError.setError("INPUT VALIDATION FAILED");
         apiError.setSubErrors(errors);
 
         return new ResponseEntity<>(apiError , HttpStatus.BAD_REQUEST) ;
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<APIError> handleAuthenticationException(AuthenticationException ex) {
+        APIError apiError = new APIError(ex.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+
 }
