@@ -5,6 +5,8 @@ import com.ai.aiml10.dto.SignUpDTO;
 import com.ai.aiml10.dto.UserDTO;
 import com.ai.aiml10.service.AuthLoginService;
 import com.ai.aiml10.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +26,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginDTO loginDTO){
+    public ResponseEntity<String> login(@RequestBody @Valid LoginDTO loginDTO , HttpServletResponse response){
         String token = authLoginService.login(loginDTO);
+
+        Cookie cookie = new Cookie("token" , token);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+
         return ResponseEntity.ok(token);
     }
 

@@ -1,5 +1,7 @@
 package com.ai.aiml10.configuration;
 
+import com.ai.aiml10.filter.JWTFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,35 +19,35 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final JWTFilter jwtFilter ;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
-                .csrf(csrfConfig -> csrfConfig.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 /*.cors(cors -> cors.disable())*/
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                     .requestMatchers( "/error" , "/auth/**").permitAll()
-                    .requestMatchers("/athlete/**").hasAnyRole("ADMIN" ,"USER")
+/*                    .requestMatchers("/athlete/**").hasAnyRole("ADMIN" ,"USER")
                     .requestMatchers("/biologicalPassport/**").hasRole("ADMIN")
-                    .anyRequest().permitAll())
+*/
+                    .anyRequest().authenticated())
             .sessionManagement(sessionManagement -> sessionManagement
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter , UsernamePasswordAuthenticationFilter.class);
 
             //.formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();
 
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder(){
-            return new BCryptPasswordEncoder();
     }
 
     @Bean

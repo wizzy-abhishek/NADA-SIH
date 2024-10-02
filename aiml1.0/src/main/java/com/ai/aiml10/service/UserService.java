@@ -33,6 +33,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmailIgnoreCase(username).orElseThrow(() -> new ResourceNotFoundException("User with Email : " + username + " not found"));
     }
 
+    public UserEntity findUserById(String userId){
+       return userRepository.findById(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("User with id : " + userId + " not found")) ;
+    }
+
     public UserDTO signUp(SignUpDTO signUpDTO){
 
         Optional<UserEntity> user = userRepository.findByEmailIgnoreCase(signUpDTO.getEmail());

@@ -19,7 +19,7 @@ class ApplicationTests {
 		String token = jwtService.generateToken(userEntity);
 		System.out.println(token);
 
-		Long id = jwtService.getUserIdFromToken(token);
+		String id = jwtService.getUserIdFromToken(token);
 		System.out.println(id);
 	}
 
