@@ -49,12 +49,15 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET , "/athlete/**").hasAnyRole(ADMIN.name() ,
                                                                                             OPERATOR.name() ,
                                                                                             INVESTIGATOR.name())
-
                         .requestMatchers(HttpMethod.POST , "/athlete/**").hasAnyRole(ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH , "/athlete").hasAnyRole(ADMIN.name())
                     .requestMatchers(HttpMethod.GET , "/biologicalPassport/**" ).hasAnyRole(ADMIN.name() ,
                                                                                                         INVESTIGATOR.name())
-                        .requestMatchers(HttpMethod.GET , "/bloodTest/**" , "/urineTest/**").hasAnyRole()
+                        .requestMatchers(HttpMethod.GET , "/bloodTest/**" , "/urineTest/**").hasAnyRole(ADMIN.name() ,
+                                                                                                                    OPERATOR.name() ,
+                                                                                                                    INVESTIGATOR.name())
+                        .requestMatchers(HttpMethod.POST , "/bloodTest/**" , "/urineTest/**" ).hasAnyRole(ADMIN.name() ,
+                                                                                                                        OPERATOR.name())
                     .anyRequest().authenticated())
             .sessionManagement(sessionManagement -> sessionManagement
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
