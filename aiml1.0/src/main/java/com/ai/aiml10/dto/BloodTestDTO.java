@@ -2,10 +2,16 @@ package com.ai.aiml10.dto;
 
 import com.ai.aiml10.enums.Status;
 import jakarta.validation.constraints.*;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.Objects;
 
+@Data
+@RequiredArgsConstructor
+@ToString
 public class BloodTestDTO {
 
     @NotBlank(message = "Blood Test ID cant be blank")
@@ -51,88 +57,4 @@ public class BloodTestDTO {
     private Status condition;     // Result of the doping test (POSITIVE/NEGATIVE/SUSPICIOUS)
 
 
-    public String getTestId() {
-        return testId;
-    }
-
-    public void setTestId(String testId) {
-        this.testId = testId;
-    }
-
-    public String getAthleteId() {
-        return athleteId;
-    }
-
-    public void setAthleteId(String athleteId) {
-        this.athleteId = athleteId;
-    }
-
-    public Date getTestDate() {
-        return testDate;
-    }
-
-    public void setTestDate(Date testDate) {
-        this.testDate = testDate;
-    }
-
-    public double getHemoglobin() {
-        return hemoglobin;
-    }
-
-    public void setHemoglobin(double hemoglobin) {
-        this.hemoglobin = hemoglobin;
-    }
-
-    public double getHematocrit() {
-        return hematocrit;
-    }
-
-    public void setHematocrit(double hematocrit) {
-        this.hematocrit = hematocrit;
-    }
-
-    public double getRedBloodCells() {
-        return redBloodCells;
-    }
-
-    public void setRedBloodCells(double redBloodCells) {
-        this.redBloodCells = redBloodCells;
-    }
-
-    public double getReticulocytes() {
-        return reticulocytes;
-    }
-
-    public void setReticulocytes(double reticulocytes) {
-        this.reticulocytes = reticulocytes;
-    }
-
-    public double getEpoLevel() {
-        return epoLevel;
-    }
-
-    public void setEpoLevel(double epoLevel) {
-        this.epoLevel = epoLevel;
-    }
-
-    public Status getCondition() {
-        return condition;
-    }
-
-    public void setCondition(Status condition) {
-        this.condition = condition;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BloodTestDTO that = (BloodTestDTO) o;
-        return Double.compare(hemoglobin, that.hemoglobin) == 0 && Double.compare(hematocrit, that.hematocrit) == 0 && Double.compare(redBloodCells, that.redBloodCells) == 0 && Double.compare(reticulocytes, that.reticulocytes) == 0 && Double.compare(epoLevel, that.epoLevel) == 0 && Objects.equals(testId, that.testId) && Objects.equals(athleteId, that.athleteId) && Objects.equals(testDate, that.testDate) && condition == that.condition;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(testId, athleteId, testDate, hemoglobin, hematocrit, redBloodCells, reticulocytes, epoLevel, condition);
-    }
 }

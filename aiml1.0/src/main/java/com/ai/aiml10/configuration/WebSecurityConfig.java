@@ -21,6 +21,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.ai.aiml10.enums.Role.*;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,17 +30,31 @@ public class WebSecurityConfig {
 
     private final JWTFilter jwtFilter ;
 
+    private static final String[] publicRoutes = {
+            "/error" , "/auth/login"
+    };
+
+    private static final String[] addNewAccounts = {
+            "/auth/signUp"
+    };
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                /*.cors(cors -> cors.disable())*/
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                    .requestMatchers( "/error" , "/auth/**").permitAll()
-/*                    .requestMatchers("/athlete/**").hasAnyRole("ADMIN" ,"USER")
-                    .requestMatchers("/biologicalPassport/**").hasRole("ADMIN")
-*/
+                    .requestMatchers(publicRoutes).permitAll()
+                        .requestMatchers(addNewAccounts).hasRole(ADMIN.name())
+                        .requestMatchers(HttpMethod.GET , "/athlete/**").hasAnyRole(ADMIN.name() ,
+                                                                                            OPERATOR.name() ,
+                                                                                            INVESTIGATOR.name())
+
+                        .requestMatchers(HttpMethod.POST , "/athlete/**").hasAnyRole(ADMIN.name())
+                        .requestMatchers(HttpMethod.PATCH , "/athlete").hasAnyRole(ADMIN.name())
+                    .requestMatchers(HttpMethod.GET , "/biologicalPassport/**" ).hasAnyRole(ADMIN.name() ,
+                                                                                                        INVESTIGATOR.name())
+                        .requestMatchers(HttpMethod.GET , "/bloodTest/**" , "/urineTest/**").hasAnyRole()
                     .anyRequest().authenticated())
             .sessionManagement(sessionManagement -> sessionManagement
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

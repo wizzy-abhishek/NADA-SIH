@@ -30,12 +30,12 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username){
-        return userRepository.findByEmailIgnoreCase(username).orElseThrow(() -> new ResourceNotFoundException("User with Email : " + username + " not found"));
+        return userRepository.findByEmailIgnoreCase(username).orElseThrow(() -> new BadCredentialsException("User with Email : " + username + " not found"));
     }
 
     public UserEntity findUserById(String userId){
        return userRepository.findById(userId)
-                .orElseThrow(()-> new ResourceNotFoundException("User with id : " + userId + " not found")) ;
+                .orElseThrow(()-> new BadCredentialsException("User with id : " + userId + " not found")) ;
     }
 
     public UserDTO signUp(SignUpDTO signUpDTO){

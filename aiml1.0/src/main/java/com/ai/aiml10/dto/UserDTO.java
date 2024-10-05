@@ -4,8 +4,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Data
+@RequiredArgsConstructor
+@ToString
 public class UserDTO {
 
     private String id;

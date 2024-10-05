@@ -8,5 +8,5 @@ public enum Sport {
     ATHLETICS,
     JAVELIN,
     VOLLEYBALL,
-    BADMINTON
+    BADMINTON ;
 }

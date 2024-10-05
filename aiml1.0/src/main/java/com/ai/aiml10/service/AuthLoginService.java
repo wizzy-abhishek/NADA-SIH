@@ -1,6 +1,7 @@
 package com.ai.aiml10.service;
 
 import com.ai.aiml10.dto.LoginDTO;
+import com.ai.aiml10.dto.LoginResponseDTO;
 import com.ai.aiml10.entity.UserEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,21 +13,33 @@ public class AuthLoginService {
 
     private final AuthenticationManager authenticationManager ;
     private final JWTService jwtService ;
+    private final UserService userService ;
 
-    public AuthLoginService(AuthenticationManager authenticationManager, JWTService jwtService) {
+    public AuthLoginService(AuthenticationManager authenticationManager, JWTService jwtService, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.userService = userService;
     }
 
-    public String login(LoginDTO loginDTO) {
+    public LoginResponseDTO login(LoginDTO loginDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail() , loginDTO.getPassword())
         );
 
         UserEntity user = (UserEntity) authentication.getPrincipal();
-        String token = jwtService.generateToken(user);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
-        return token ;
+        return new LoginResponseDTO(user.getId() , refreshToken , accessToken) ;
+    }
+
+    public LoginResponseDTO refreshToken(String refreshToken) {
+
+        String userId = jwtService.getUserIdFromToken(refreshToken);
+        UserEntity user = userService.findUserById(userId);
+        String accessToken = jwtService.generateAccessToken(user);
+
+        return new LoginResponseDTO(user.getId() , refreshToken , accessToken);
     }
 }

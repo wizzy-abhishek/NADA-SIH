@@ -22,17 +22,27 @@ public class JWTService {
         return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(UserEntity user){
+    public String generateAccessToken(UserEntity user){
 
         return Jwts.builder()
-                .subject(user.getId().toString())
+                .subject(user.getId())
                 .claim("email" , user.getEmail())
-                .claim("roles" , Set.of("ADMIN" , "USER"))
+                .claim("roles" , user.getRoles().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*30))
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*15)) //15 mins 1000*60*15
                 .signWith(getSecretKey())
                 .compact() ;
 
+    }
+
+    public String generateRefreshToken(UserEntity user) {
+
+        return Jwts.builder()
+                .subject(user.getId())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 1000L *60*60*24*30)) // 1 month
+                .signWith(getSecretKey())
+                .compact() ;
     }
 
     public String getUserIdFromToken(String token){
@@ -45,5 +55,4 @@ public class JWTService {
 
         return claims.getSubject() ;
     }
-
 }

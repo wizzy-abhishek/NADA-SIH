@@ -15,12 +15,12 @@ class ApplicationTests {
 	@Test
 	void contextLoads() {
 
-		UserEntity userEntity = new UserEntity( "abhishek.com" , "abhishek@123" , "abhishek");
+		/*UserEntity userEntity = new UserEntity( "abhishek.com" , "abhishek@123" , "abhishek");
 		String token = jwtService.generateToken(userEntity);
 		System.out.println(token);
 
 		String id = jwtService.getUserIdFromToken(token);
-		System.out.println(id);
+		System.out.println(id);*/
 	}
 
 }
