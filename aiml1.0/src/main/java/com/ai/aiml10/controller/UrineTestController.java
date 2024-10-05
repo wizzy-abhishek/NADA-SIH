@@ -24,12 +24,12 @@ public class UrineTestController {
         return ResponseEntity.ok(urineTestService.findAllUrineTestOfIndividual(athleteId));
     }
 
-    @GetMapping("/{urineTestId}")
+    @GetMapping("/view/{urineTestId}")
     public ResponseEntity<UrineTestDTO> findParticularUrineTest(@PathVariable String urineTestId){
         return ResponseEntity.ok(urineTestService.findUrineTestById(urineTestId));
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<UrineTestDTO> addUrineTestRequest(@RequestBody @Valid UrineTestDTO urineTestDTO ){
         return ResponseEntity.ok(urineTestService.addNewUrineTest(urineTestDTO));
     }

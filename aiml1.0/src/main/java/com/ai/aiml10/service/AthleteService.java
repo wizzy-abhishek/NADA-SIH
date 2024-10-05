@@ -5,11 +5,15 @@ import com.ai.aiml10.entity.AthleteEntity;
 import com.ai.aiml10.entity.BiologicalPassportEntity;
 import com.ai.aiml10.enums.Sport;
 import com.ai.aiml10.enums.Status;
+import com.ai.aiml10.exceptions.DuplicateIdException;
 import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.AthleteRepo;
+import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.lang.module.ResolutionException;
 import java.lang.reflect.Field;
@@ -44,10 +48,8 @@ public class AthleteService {
     public AthleteDTO addNewAthlete(AthleteDTO athleteDTO) {
 
         if (doesExist(athleteDTO.getAthletesID())){
-            return null ;
+            throw new DuplicateIdException("Athlete with id :" + athleteDTO.getAthletesID() + " available");
         }
-
-        System.out.println("IN SAVE ATHLETE : SERVICE CLASS");
 
         AthleteEntity athleteEntity = modelMapper.map(athleteDTO, AthleteEntity.class);
         athleteEntity.setAthletesID(athleteEntity.getAthletesID());
@@ -100,12 +102,11 @@ public class AthleteService {
     }
 
     public AthleteDTO findAthleteById(String athleteId){
-        System.out.println("In Athlete Service && inside findAthleteById");
+
         return modelMapper.map(athleteRepo.findById(athleteId).orElseThrow(() ->new ResourceNotFoundException("Athlete not found with id : " + athleteId) ) , AthleteDTO.class);
     }
 
     public void updateAthleteEntity(AthleteDTO athleteDTO){
-        System.out.println("In Athlete Service && inside updateAthleteEntity");
         athleteRepo.save(modelMapper.map(athleteDTO , AthleteEntity.class));
     }
 

@@ -21,19 +21,19 @@ public class AthleteController {
         this.athleteService = athleteService;
     }
 
-    @PostMapping()
+    @PostMapping("/add")
     public ResponseEntity<AthleteDTO> addAthlete(@RequestBody @Valid AthleteDTO athleteDTO){
         System.out.println("In athlete controller");
         AthleteDTO athleteDTOSaved = athleteService.addNewAthlete(athleteDTO);
         return new ResponseEntity<>(athleteDTOSaved , HttpStatus.CREATED);
     }
 
-    @GetMapping()
+    @GetMapping("/view")
     public ResponseEntity<List<AthleteDTO>>getAllAthletes(){
         return ResponseEntity.ok(athleteService.getAllAthletes());
     }
 
-    @GetMapping("/{athleteId}")
+    @GetMapping("/view/{athleteId}")
     public ResponseEntity<AthleteDTO> getAthleteById(@PathVariable("athleteId") String athleteId){
         return ResponseEntity.ok(athleteService.findAthleteById(athleteId));
     }

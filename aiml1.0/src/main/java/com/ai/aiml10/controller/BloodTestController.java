@@ -24,12 +24,12 @@ public class BloodTestController {
         return ResponseEntity.ok(bloodTestService.findAllBloodTestReportOfAnAthlete(athleteId)) ;
     }
 
-    @GetMapping("/{bloodTestId}")
+    @GetMapping("/view/{bloodTestId}")
     public ResponseEntity<BloodTestDTO> findParticularBloodTest(@PathVariable String bloodTestId){
         return ResponseEntity.ok(bloodTestService.findBloodTestById(bloodTestId));
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<BloodTestDTO> assignBloodTestToAthlete(@RequestBody @Valid BloodTestDTO bloodTestDTO){
         return ResponseEntity.ok(bloodTestService.addNewBloodTest(bloodTestDTO)) ;
     }

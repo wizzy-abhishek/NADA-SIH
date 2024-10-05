@@ -1,9 +1,11 @@
 package com.ai.aiml10.advices;
 
+import com.ai.aiml10.exceptions.DuplicateIdException;
 import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -29,16 +31,29 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError , HttpStatus.NOT_FOUND) ;
     }
 
+    @ExceptionHandler(DuplicateIdException.class)
+    public ResponseEntity<APIError> duplicateResource(DuplicateIdException exception){
+
+        APIError apiError = new APIError();
+
+        apiError.setStatusCode(HttpStatus.BAD_REQUEST);
+        apiError.setError(exception.getMessage());
+        apiError.getSubErrors().add(null);
+
+        return new ResponseEntity<>(apiError , HttpStatus.BAD_REQUEST) ;
+
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIError> handleUltimateException(Exception exception){
 
         APIError apiError = new APIError();
 
-        apiError.setStatusCode(HttpStatus.MULTI_STATUS);
+        apiError.setStatusCode(HttpStatus.BAD_REQUEST);
         apiError.setError(exception.getMessage());
         apiError.getSubErrors().add(null);
 
-        return new ResponseEntity<>(apiError , HttpStatus.MULTI_STATUS) ;
+        return new ResponseEntity<>(apiError , HttpStatus.BAD_REQUEST) ;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,7 +63,7 @@ public class GlobalExceptionHandler {
                 .getBindingResult()
                 .getAllErrors()
                 .stream()
-                .map(error -> error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
 
         APIError apiError = new APIError();

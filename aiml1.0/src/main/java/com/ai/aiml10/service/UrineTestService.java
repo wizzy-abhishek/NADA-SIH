@@ -7,6 +7,8 @@ import com.ai.aiml10.entity.AthleteEntity;
 import com.ai.aiml10.entity.BiologicalPassportEntity;
 import com.ai.aiml10.entity.UrineTestEntity;
 import com.ai.aiml10.enums.Status;
+import com.ai.aiml10.exceptions.DuplicateIdException;
+import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.UrineTestRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class UrineTestService {
     }
 
     public UrineTestDTO findUrineTestById(String urineTestId ){
-        return modelMapper.map(urineTestRepo.findById(urineTestId) , UrineTestDTO.class);
+        return modelMapper.map(urineTestRepo.findById(urineTestId).orElseThrow(() -> new ResourceNotFoundException("Urine test with id : " + urineTestId + " unavailable")) , UrineTestDTO.class);
     }
 
 
@@ -50,12 +52,12 @@ public class UrineTestService {
 
         if(!doesAthleteExist(urineTestDTO.getAthleteId())){
             System.out.println("Athlete doesn't exist");
-            return null ;
+            throw new ResourceNotFoundException("Athlete with id :" + urineTestDTO.getAthleteId() + " unavailable") ;
         }
 
         if(!doesUrineTestIdExist(urineTestDTO.getTestId())){
             System.out.println("Urine Test ID already exists");
-            return null ;
+            throw new DuplicateIdException("URINE REPORT WITH ID : "+ urineTestDTO.getTestId() + " ALREADY PRESENT");
         }
 
         UrineTestEntity urineTestEntity = modelMapper.map(urineTestDTO , UrineTestEntity.class);

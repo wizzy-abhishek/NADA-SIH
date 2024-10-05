@@ -43,21 +43,30 @@ public class WebSecurityConfig {
 
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                    .requestMatchers(publicRoutes).permitAll()
-                        .requestMatchers(addNewAccounts).hasRole(ADMIN.name())
-                        .requestMatchers(HttpMethod.GET , "/athlete/**").hasAnyRole(ADMIN.name() ,
-                                                                                            OPERATOR.name() ,
-                                                                                            INVESTIGATOR.name())
-                        .requestMatchers(HttpMethod.POST , "/athlete/**").hasAnyRole(ADMIN.name())
-                        .requestMatchers(HttpMethod.PATCH , "/athlete").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.GET , "/biologicalPassport/**" ).hasAnyRole(ADMIN.name() ,
-                                                                                                        INVESTIGATOR.name())
-                        .requestMatchers(HttpMethod.GET , "/bloodTest/**" , "/urineTest/**").hasAnyRole(ADMIN.name() ,
-                                                                                                                    OPERATOR.name() ,
-                                                                                                                    INVESTIGATOR.name())
-                        .requestMatchers(HttpMethod.POST , "/bloodTest/**" , "/urineTest/**" ).hasAnyRole(ADMIN.name() ,
-                                                                                                                        OPERATOR.name())
+                .authorizeHttpRequests(authorization -> authorization
+
+                        .requestMatchers(publicRoutes).permitAll()
+                        .requestMatchers(addNewAccounts)
+                        .hasRole(ADMIN.name())
+
+                        .requestMatchers(HttpMethod.PATCH , "/athlete")
+                        .hasRole(ADMIN.name())
+
+                        .requestMatchers(HttpMethod.GET , "/athlete/view/**" , "athlete/status/**")
+                        .hasAnyRole(ADMIN.name() , ANALYST.name() ,INVESTIGATOR.name())
+
+                        .requestMatchers(HttpMethod.POST , "/athlete/add/**")
+                        .hasRole(ADMIN.name())
+
+                        .requestMatchers(HttpMethod.GET , "/biologicalPassport/**" )
+                        .hasAnyRole(ADMIN.name() , INVESTIGATOR.name() , ANALYST.name())
+
+                        .requestMatchers(HttpMethod.GET , "/bloodTest/**" , "/urineTest/**")
+                        .hasAnyRole(ADMIN.name() , ANALYST.name() , INVESTIGATOR.name())
+
+                        .requestMatchers(HttpMethod.POST , "/bloodTest/**" , "/urineTest/**" )
+                        .hasAnyRole(ADMIN.name() , OPERATOR.name())
+
                     .anyRequest().authenticated())
             .sessionManagement(sessionManagement -> sessionManagement
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -86,7 +95,7 @@ public class WebSecurityConfig {
 
             UserDetails adminUser = User
                     .withUsername("Gargi")
-                    .password(passwordEncoder().encode("Bubu"))
+                    .password(passwordEncoder().encode("Bear"))
                     .roles("ADMIN")
                     .build();
 

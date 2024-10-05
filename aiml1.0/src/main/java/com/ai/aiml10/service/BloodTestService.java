@@ -7,6 +7,8 @@ import com.ai.aiml10.entity.AthleteEntity;
 import com.ai.aiml10.entity.BiologicalPassportEntity;
 import com.ai.aiml10.entity.BloodTestEntity;
 import com.ai.aiml10.enums.Status;
+import com.ai.aiml10.exceptions.DuplicateIdException;
+import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.BloodTestRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -44,15 +46,13 @@ public class BloodTestService {
 
         if(!doesAthleteExist(bloodTestDTO.getAthleteId())){
             System.out.println("Athlete doesn't exist");
-            return null ;
+            throw new ResourceNotFoundException("Athlete with id :" + bloodTestDTO.getAthleteId() + " unavailable") ;
         }
 
         if(!doesBloodTestIdExist(bloodTestDTO.getTestId())){
             System.out.println("Blood Test ID already exists");
-            return null ;
+            throw new DuplicateIdException("BLOOD REPORT WITH ID : "+ bloodTestDTO.getTestId() + " ALREADY PRESENT");
         }
-
-        System.out.println("Crossed Checking");
 
         BloodTestEntity bloodTestEntity = modelMapper.map(bloodTestDTO , BloodTestEntity.class);
         bloodTestRepo.save(bloodTestEntity);
@@ -81,7 +81,7 @@ public class BloodTestService {
     }
 
     public BloodTestDTO findBloodTestById(String bloodTestId ){
-        return modelMapper.map(bloodTestRepo.findById(bloodTestId) , BloodTestDTO.class);
+        return modelMapper.map(bloodTestRepo.findById(bloodTestId).orElseThrow(() -> new ResourceNotFoundException("Blood test with id : " + bloodTestId + " unavailable")) , BloodTestDTO.class);
     }
 
     public List<BloodTestDTO> findAllBloodReportAccordingStatus(Status status){
