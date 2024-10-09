@@ -1,24 +1,27 @@
 package com.ai.aiml10.dto;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.io.Serializable;
+import java.util.*;
 
 @Data
-@RequiredArgsConstructor
+@Getter
+@Setter
 @ToString
-public class BiologicalPassportDTO {
+public class BiologicalPassportDTO implements Serializable {
 
-    private String passportId;    // Unique identifier for the passport
-    private String athleteId;     // Reference to the Athlete
-    private List<BloodTestDTO> bloodTests;  // List of blood test results over time
-    private List<UrineTestDTO> urineTests;  // List of urine test results over time
+    private String passportID;    // Unique identifier for the passport
+    private String athletesID;     // Reference to the Athlete
+    private Set<BloodTestDTO> bloodTests;  // List of blood test results over time
+    private Set<UrineTestDTO> urineTests;  // List of urine test results over time
     private Date startDate;       // Start date of monitoring
     private Date lastUpdated;     // Last update date
     private boolean suspicious;   // Whether the passport flags any suspicious patterns
+
+    public BiologicalPassportDTO() {
+        this.bloodTests = new HashSet<>(5);
+        this.urineTests = new HashSet<>(5);
+    }
 
 }

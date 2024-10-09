@@ -11,7 +11,9 @@ import com.ai.aiml10.exceptions.DuplicateIdException;
 import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.BloodTestRepo;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -40,50 +42,51 @@ public class BloodTestService {
         return bloodTestRepo.findById(bloodTestId).isEmpty();
     }
 
+    @Transactional
     public BloodTestDTO addNewBloodTest(BloodTestDTO bloodTestDTO){
 
-        System.out.println("In addNewBloodTest Service");
-
-        if(!doesAthleteExist(bloodTestDTO.getAthleteId())){
-            System.out.println("Athlete doesn't exist");
-            throw new ResourceNotFoundException("Athlete with id :" + bloodTestDTO.getAthleteId() + " unavailable") ;
+        if(!doesAthleteExist(bloodTestDTO.getAthletesID())){
+            throw new ResourceNotFoundException("Athlete with id :" + bloodTestDTO.getAthletesID() + " unavailable") ;
         }
 
-        if(!doesBloodTestIdExist(bloodTestDTO.getTestId())){
-            System.out.println("Blood Test ID already exists");
-            throw new DuplicateIdException("BLOOD REPORT WITH ID : "+ bloodTestDTO.getTestId() + " ALREADY PRESENT");
+        if(!doesBloodTestIdExist(bloodTestDTO.getTestID())){
+            throw new DuplicateIdException("BLOOD REPORT WITH ID : "+ bloodTestDTO.getTestID() + " ALREADY PRESENT");
         }
 
         BloodTestEntity bloodTestEntity = modelMapper.map(bloodTestDTO , BloodTestEntity.class);
         bloodTestRepo.save(bloodTestEntity);
 
-        System.out.println(bloodTestEntity.getTestId());
+        System.out.println(bloodTestEntity.getTestID());
 
-        AthleteEntity athleteEntity = modelMapper.map(athleteService.findAthleteById(bloodTestEntity.getAthleteId()) , AthleteEntity.class);
-        athleteEntity.getBloodTestIds().add(bloodTestEntity.getTestId());
-        athleteService.updateAthleteEntity(modelMapper.map(athleteEntity , AthleteDTO.class));
+        AthleteEntity athleteEntity = modelMapper.map(athleteService.findAthleteById(bloodTestEntity.getAthletesID()) , AthleteEntity.class);
 
-        BiologicalPassportEntity biologicalPassportEntity = modelMapper.map( biologicalPassportService.getBiologicalPassport(bloodTestEntity.getAthleteId()) , BiologicalPassportEntity.class ) ;
+        BiologicalPassportEntity biologicalPassportEntity = modelMapper.map( biologicalPassportService.getBiologicalPassport(bloodTestEntity.getAthletesID()) , BiologicalPassportEntity.class ) ;
         biologicalPassportEntity.getBloodTests().add(bloodTestEntity);
         biologicalPassportEntity.setLastUpdated(new Date());
         biologicalPassportService.updateExistingBloodAndUrineList(modelMapper.map(biologicalPassportEntity , BiologicalPassportDTO.class));
 
-        return findBloodTestById(bloodTestEntity.getTestId()) ;
+        athleteEntity.getBloodTestIds().add(bloodTestEntity.getTestID());
+        athleteService.updateAthleteEntity(modelMapper.map(athleteEntity , AthleteDTO.class));
+
+        return findBloodTestById(bloodTestEntity.getTestID()) ;
     }
 
+    @Transactional()
     public List<BloodTestDTO> findAllBloodTestReportOfAnAthlete(String athleteId){
 
-        List<BloodTestEntity> bloodTestEntityList =  bloodTestRepo.findByAthleteId(athleteId);
+        List<BloodTestEntity> bloodTestEntityList =  bloodTestRepo.findByAthletesID(athleteId);
 
         return bloodTestEntityList.stream()
                 .map(bloodTestEntity -> modelMapper.map(bloodTestEntity , BloodTestDTO.class))
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public BloodTestDTO findBloodTestById(String bloodTestId ){
         return modelMapper.map(bloodTestRepo.findById(bloodTestId).orElseThrow(() -> new ResourceNotFoundException("Blood test with id : " + bloodTestId + " unavailable")) , BloodTestDTO.class);
     }
 
+    @Transactional
     public List<BloodTestDTO> findAllBloodReportAccordingStatus(Status status){
         List<BloodTestEntity> bloodTestEntityList = bloodTestRepo.findByCondition(status);
 

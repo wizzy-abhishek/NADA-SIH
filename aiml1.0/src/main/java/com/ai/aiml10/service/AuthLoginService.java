@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthLoginService {
@@ -21,6 +22,7 @@ public class AuthLoginService {
         this.userService = userService;
     }
 
+    @Transactional
     public LoginResponseDTO login(LoginDTO loginDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -34,9 +36,10 @@ public class AuthLoginService {
         return new LoginResponseDTO(user.getId() , refreshToken , accessToken) ;
     }
 
+    @Transactional
     public LoginResponseDTO refreshToken(String refreshToken) {
 
-        String userId = jwtService.getUserIdFromToken(refreshToken);
+        Long userId = jwtService.getUserIdFromToken(refreshToken);
         UserEntity user = userService.findUserById(userId);
         String accessToken = jwtService.generateAccessToken(user);
 

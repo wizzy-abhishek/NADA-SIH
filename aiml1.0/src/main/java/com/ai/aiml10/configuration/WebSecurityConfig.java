@@ -31,7 +31,7 @@ public class WebSecurityConfig {
     private final JWTFilter jwtFilter ;
 
     private static final String[] publicRoutes = {
-            "/error" , "/auth/login"
+            "/error" , "/auth/login" , "/auth/refresh"
     };
 
     private static final String[] addNewAccounts = {
@@ -49,7 +49,7 @@ public class WebSecurityConfig {
                         .requestMatchers(addNewAccounts)
                         .hasRole(ADMIN.name())
 
-                        .requestMatchers(HttpMethod.PATCH , "/athlete")
+                        .requestMatchers(HttpMethod.PATCH , "/athlete/**")
                         .hasRole(ADMIN.name())
 
                         .requestMatchers(HttpMethod.GET , "/athlete/view/**" , "athlete/status/**")
@@ -72,7 +72,7 @@ public class WebSecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter , UsernamePasswordAuthenticationFilter.class);
 
-            //.formLogin(Customizer.withDefaults());
+
 
         return httpSecurity.build();
 

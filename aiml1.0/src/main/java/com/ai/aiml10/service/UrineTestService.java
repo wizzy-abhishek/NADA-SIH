@@ -11,11 +11,15 @@ import com.ai.aiml10.exceptions.DuplicateIdException;
 import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.UrineTestRepo;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.ai.aiml10.service.AthleteService.CACHE_NAME;
 
 @Service
 public class UrineTestService {
@@ -45,40 +49,36 @@ public class UrineTestService {
         return modelMapper.map(urineTestRepo.findById(urineTestId).orElseThrow(() -> new ResourceNotFoundException("Urine test with id : " + urineTestId + " unavailable")) , UrineTestDTO.class);
     }
 
-
+    @Transactional
     public UrineTestDTO addNewUrineTest(UrineTestDTO urineTestDTO){
 
-        System.out.println("In addNewUrineTest Service");
-
-        if(!doesAthleteExist(urineTestDTO.getAthleteId())){
-            System.out.println("Athlete doesn't exist");
-            throw new ResourceNotFoundException("Athlete with id :" + urineTestDTO.getAthleteId() + " unavailable") ;
+        if(!doesAthleteExist(urineTestDTO.getAthletesID())){
+            throw new ResourceNotFoundException("Athlete with id :" + urineTestDTO.getAthletesID() + " unavailable") ;
         }
 
-        if(!doesUrineTestIdExist(urineTestDTO.getTestId())){
-            System.out.println("Urine Test ID already exists");
-            throw new DuplicateIdException("URINE REPORT WITH ID : "+ urineTestDTO.getTestId() + " ALREADY PRESENT");
+        if(!doesUrineTestIdExist(urineTestDTO.getTestID())){
+            throw new DuplicateIdException("URINE REPORT WITH ID : "+ urineTestDTO.getTestID() + " ALREADY PRESENT");
         }
 
         UrineTestEntity urineTestEntity = modelMapper.map(urineTestDTO , UrineTestEntity.class);
         urineTestRepo.save(urineTestEntity);
 
-        AthleteEntity athleteEntity = modelMapper.map(athleteService.findAthleteById(urineTestEntity.getAthleteId()) , AthleteEntity.class);
-        athleteEntity.getUrineTestIds().add(urineTestEntity.getTestId());
+        AthleteEntity athleteEntity = modelMapper.map(athleteService.findAthleteById(urineTestEntity.getAthletesID()) , AthleteEntity.class);
+        athleteEntity.getUrineTestIds().add(urineTestEntity.getTestID());
         athleteService.updateAthleteEntity(modelMapper.map(athleteEntity , AthleteDTO.class));
 
-        BiologicalPassportEntity biologicalPassportEntity = modelMapper.map( biologicalPassportService.getBiologicalPassport(urineTestEntity.getAthleteId()) , BiologicalPassportEntity.class ) ;
+        BiologicalPassportEntity biologicalPassportEntity = modelMapper.map( biologicalPassportService.getBiologicalPassport(urineTestEntity.getAthletesID()) , BiologicalPassportEntity.class ) ;
         biologicalPassportEntity.getUrineTests().add(urineTestEntity);
         biologicalPassportEntity.setLastUpdated(new Date());
         biologicalPassportService.updateExistingBloodAndUrineList(modelMapper.map(biologicalPassportEntity , BiologicalPassportDTO.class));
 
-        return findUrineTestById(urineTestEntity.getTestId());
+        return findUrineTestById(urineTestEntity.getTestID());
     }
 
-
+    @Transactional
     public List<UrineTestDTO> findAllUrineTestOfIndividual(String athleteId) {
 
-        List<UrineTestEntity> listOfAllUrineTest = urineTestRepo.findByAthleteId(athleteId);
+        List<UrineTestEntity> listOfAllUrineTest = urineTestRepo.findByAthletesID(athleteId);
 
         return listOfAllUrineTest.stream()
                 .map(urineTestEntity -> modelMapper.map(urineTestEntity , UrineTestDTO.class))

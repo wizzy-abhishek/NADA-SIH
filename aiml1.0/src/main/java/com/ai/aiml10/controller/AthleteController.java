@@ -23,7 +23,6 @@ public class AthleteController {
 
     @PostMapping("/add")
     public ResponseEntity<AthleteDTO> addAthlete(@RequestBody @Valid AthleteDTO athleteDTO){
-        System.out.println("In athlete controller");
         AthleteDTO athleteDTOSaved = athleteService.addNewAthlete(athleteDTO);
         return new ResponseEntity<>(athleteDTOSaved , HttpStatus.CREATED);
     }

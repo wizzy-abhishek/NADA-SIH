@@ -4,16 +4,20 @@ import com.ai.aiml10.enums.Gender;
 import com.ai.aiml10.enums.Sport;
 import com.ai.aiml10.enums.Status;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
-@RequiredArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
 @ToString
-public class AthleteDTO {
+public class AthleteDTO implements Serializable {
 
     private String athletesID ;
 
@@ -34,9 +38,9 @@ public class AthleteDTO {
     @NotBlank(message = "Mobile number is required")
     private String mobileNum ;
 
-    private List<String> bloodTestIds;              // List of blood test IDs4
+    private Set<String> bloodTestIds;              // List of blood test IDs4
 
-    private List<String> urineTestIds;              // List of urine test IDs
+    private Set<String> urineTestIds;              // List of urine test IDs
 
     private String biologicalPassportId;            // ID for the biological passport
 
@@ -50,6 +54,10 @@ public class AthleteDTO {
 
     private Status suspicion ;
 
-
+    public AthleteDTO() {
+        this.bloodTestIds = new HashSet<>(5);
+        this.urineTestIds = new HashSet<>(5);
+        this.anomalyDetails = new ArrayList<>(5);
+    }
 
 }

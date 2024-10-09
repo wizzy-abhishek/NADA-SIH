@@ -3,8 +3,8 @@ package com.ai.aiml10.service;
 import com.ai.aiml10.dto.SignUpDTO;
 import com.ai.aiml10.dto.UserDTO;
 import com.ai.aiml10.entity.UserEntity;
-import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,26 +15,20 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository ;
     private final ModelMapper modelMapper ;
     private final PasswordEncoder passwordEncoder ;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.passwordEncoder = passwordEncoder;
-
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username){
         return userRepository.findByEmailIgnoreCase(username).orElseThrow(() -> new BadCredentialsException("User with Email : " + username + " not found"));
     }
 
-    public UserEntity findUserById(String userId){
-       return userRepository.findById(userId)
+    public UserEntity findUserById(Long userId){
+        return userRepository.findById(userId)
                 .orElseThrow(()-> new BadCredentialsException("User with id : " + userId + " not found")) ;
     }
 

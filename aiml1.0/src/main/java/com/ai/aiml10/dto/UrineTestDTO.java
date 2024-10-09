@@ -1,24 +1,30 @@
 package com.ai.aiml10.dto;
 
+import com.ai.aiml10.entity.BiologicalPassportEntity;
 import com.ai.aiml10.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 @Data
+@Getter
+@Setter
 @RequiredArgsConstructor
 @ToString
-public class UrineTestDTO {
+public class UrineTestDTO implements Serializable {
 
     @NotBlank(message = "Urine Test ID cant be blank")
-    private String testId;        // Unique identifier for the test
+    private String testID;        // Unique identifier for the test
+
+    /* private BiologicalPassportEntity biologicalPassport; */
 
     @NotBlank(message = "Athletes ID for respective Urine Test is mandatory")
-    private String athleteId;     // Reference to the Athlete
+    private String athletesID;     // Reference to the Athlete
 
     @NotNull(message = "Urine Test date is required")
     @PastOrPresent(message = "Date of Urine test should be past or present")
@@ -40,6 +46,7 @@ public class UrineTestDTO {
     @Digits(integer = 1, fraction = 2, message = "Testosterone to Epitestosterone ratio must be a valid number with up to 1 digit before and 2 after the decimal point")
     @DecimalMin(value = "0.1", message = "Testosterone to Epitestosterone ratio must be at least 0.1")
     @DecimalMax(value = "10.0", message = "Testosterone to Epitestosterone ratio must be at most 10.0")
+    @JsonProperty("tEratio")
     private double tEratio;      // Testosterone to Epitestosterone ratio
 
     private boolean nandrolone;   // Presence of nandrolone (positive/negative)
@@ -47,6 +54,5 @@ public class UrineTestDTO {
     private boolean stimulants;   // Presence of stimulants (positive/negative)
 
     private Status condition;   // Result of the doping test (POSITIVE/NEGATIVE/SUSPICIOUS)
-
 
 }

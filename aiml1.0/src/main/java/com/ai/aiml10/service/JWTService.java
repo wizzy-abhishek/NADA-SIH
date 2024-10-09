@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Set;
 
 @Service
 public class JWTService {
@@ -25,11 +24,11 @@ public class JWTService {
     public String generateAccessToken(UserEntity user){
 
         return Jwts.builder()
-                .subject(user.getId())
+                .subject(String.valueOf(user.getId()))
                 .claim("email" , user.getEmail())
                 .claim("roles" , user.getRoles().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*15)) //15 mins 1000*60*15
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*60*24 )) //60 mins 1000*60*60
                 .signWith(getSecretKey())
                 .compact() ;
 
@@ -38,14 +37,14 @@ public class JWTService {
     public String generateRefreshToken(UserEntity user) {
 
         return Jwts.builder()
-                .subject(user.getId())
+                .subject(user.getId().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000L *60*60*24*30)) // 1 month
                 .signWith(getSecretKey())
                 .compact() ;
     }
 
-    public String getUserIdFromToken(String token){
+    public Long getUserIdFromToken(String token){
 
         Claims claims = Jwts.parser()
                 .verifyWith(getSecretKey())
@@ -53,6 +52,6 @@ public class JWTService {
                 .parseSignedClaims(token)
                 .getPayload() ;
 
-        return claims.getSubject() ;
+        return Long.valueOf(claims.getSubject()) ;
     }
 }

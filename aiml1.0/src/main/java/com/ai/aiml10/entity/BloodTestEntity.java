@@ -1,25 +1,23 @@
 package com.ai.aiml10.entity;
 
 import com.ai.aiml10.enums.Status;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Date;
-import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @ToString
 @RequiredArgsConstructor
-@Document(collection = "BloodTest")
+@Entity(name = "BloodTest")
 public class BloodTestEntity {
 
     @Id
-    private String testId;        // Unique identifier for the test
+    private String testID;        // Unique identifier for the test
 
-    private String athleteId;     // Reference to the Athlete
+    @Column(nullable = false , updatable = false)
+    private String athletesID;     // Reference to the Athlete
 
     private Date testDate;        // Date of the test
 
@@ -33,6 +31,7 @@ public class BloodTestEntity {
 
     private double epoLevel;      // Erythropoietin hormone level (mIU/mL)  Normal Range: 4 to 24 mIU/mL
 
+    @Enumerated(EnumType.STRING)
     private Status condition;     // Result of the doping test (POSITIVE/NEGATIVE/SUSPICIOUS)
 
 }

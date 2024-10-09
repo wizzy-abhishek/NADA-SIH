@@ -8,16 +8,15 @@ import com.ai.aiml10.enums.Status;
 import com.ai.aiml10.exceptions.DuplicateIdException;
 import com.ai.aiml10.exceptions.ResourceNotFoundException;
 import com.ai.aiml10.repo.AthleteRepo;
-import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.lang.module.ResolutionException;
 import java.lang.reflect.Field;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +27,7 @@ public class AthleteService {
     private final AthleteRepo athleteRepo;
     private final ModelMapper modelMapper;
     private final BiologicalPassportService biologicalPassportService ;
+    protected final static String CACHE_NAME = "athlete" ;
 
     public AthleteService(AthleteRepo athleteRepo, ModelMapper modelMapper, BiologicalPassportService biologicalPassportService) {
         this.athleteRepo = athleteRepo;
@@ -45,6 +45,8 @@ public class AthleteService {
         return false ;
     }
 
+
+    @Transactional
     public AthleteDTO addNewAthlete(AthleteDTO athleteDTO) {
 
         if (doesExist(athleteDTO.getAthletesID())){
@@ -56,19 +58,20 @@ public class AthleteService {
         athleteRepo.save(athleteEntity);
 
         BiologicalPassportEntity biologicalPassportEntity = new BiologicalPassportEntity();
-        biologicalPassportEntity.setPassportId(athleteEntity.getAthletesID());
-        biologicalPassportEntity.setAthleteId(athleteEntity.getAthletesID());
-        biologicalPassportEntity.setStartDate(new Date());
+        biologicalPassportEntity.setPassportID(athleteEntity.getAthletesID());
+        biologicalPassportEntity.setAthletesID(athleteEntity.getAthletesID());
+        biologicalPassportEntity.setStartDate(LocalDateTime.now());
         biologicalPassportEntity.setSuspicious(false);
 
         biologicalPassportService.addNewBiologicalPassport(biologicalPassportEntity);
 
-        athleteEntity.setBiologicalPassportId(biologicalPassportEntity.getPassportId());
+        athleteEntity.setBiologicalPassportId(biologicalPassportEntity.getPassportID());
         AthleteEntity savedEntity = athleteRepo.save(athleteEntity);
 
         return modelMapper.map(savedEntity, AthleteDTO.class);  // Map the saved entity to DTO
     }
 
+    @Transactional
     public List<AthleteDTO> getAllAthletes(){
         List<AthleteEntity> listOfAthletesEntity = athleteRepo.findAll();
 
@@ -77,10 +80,12 @@ public class AthleteService {
                 .collect(Collectors.toList());
     }
 
-    public AthleteDTO updatePartialInfoOfAthlete(String athleteId, Map<String, Object> updateDetails) {
+    @Transactional
+    @CachePut(cacheNames = CACHE_NAME , key = "#athletesID")
+    public AthleteDTO updatePartialInfoOfAthlete(String athletesID, Map<String, Object> updateDetails) {
 
-        AthleteEntity athlete = athleteRepo.findById(athleteId)
-                .orElseThrow(() -> new ResourceNotFoundException("Athlete not found with id : " + athleteId));
+        AthleteEntity athlete = athleteRepo.findById(athletesID)
+                .orElseThrow(() -> new ResourceNotFoundException("Athlete not found with id : " + athletesID));
 
         updateDetails.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(AthleteEntity.class, key);
@@ -101,15 +106,21 @@ public class AthleteService {
         return modelMapper.map(athleteRepo.save(athlete) , AthleteDTO.class);
     }
 
-    public AthleteDTO findAthleteById(String athleteId){
+    @Transactional
+    @Cacheable(cacheNames = CACHE_NAME , key = "#athletesID")
+    public AthleteDTO findAthleteById(String athletesID){
 
-        return modelMapper.map(athleteRepo.findById(athleteId).orElseThrow(() ->new ResourceNotFoundException("Athlete not found with id : " + athleteId) ) , AthleteDTO.class);
+        return modelMapper.map(athleteRepo.findById(athletesID).orElseThrow(() ->new ResourceNotFoundException("Athlete not found with id : " + athletesID) ) , AthleteDTO.class);
     }
 
-    public void updateAthleteEntity(AthleteDTO athleteDTO){
-        athleteRepo.save(modelMapper.map(athleteDTO , AthleteEntity.class));
+    @Transactional
+    @CachePut(cacheNames = CACHE_NAME , key = "#result.athletesID")
+    public AthleteDTO updateAthleteEntity(AthleteDTO athleteDTO){
+        AthleteEntity athlete = athleteRepo.save(modelMapper.map(athleteDTO , AthleteEntity.class));
+        return modelMapper.map(athlete , AthleteDTO.class);
     }
 
+    @Transactional
     public List<AthleteDTO> findAllByStatus(Status status){
 
         List<AthleteEntity> athleteEntityList = athleteRepo.findBySuspicion(status);

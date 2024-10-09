@@ -37,14 +37,15 @@ public class AuthController {
 
         Cookie cookie = new Cookie("refreshToken" , loginResponseDTO.getRefreshToken());
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); //Make true when we have https
+       /* cookie.setSecure(false); //Make true when we have https*/
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(new LoginResponseDTO(loginResponseDTO.getId(), loginResponseDTO.getRefreshToken(), loginResponseDTO.getAccessToken()));
+        return ResponseEntity.ok(loginResponseDTO);
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponseDTO> refreshToken(HttpServletRequest request){
+
         String refreshToken = Arrays.stream(request.getCookies())
                 .filter(cookie -> "refreshToken".equals(cookie.getName()))
                 .findFirst()

@@ -31,6 +31,8 @@ public class BloodTestController {
 
     @PostMapping("/add")
     public ResponseEntity<BloodTestDTO> assignBloodTestToAthlete(@RequestBody @Valid BloodTestDTO bloodTestDTO){
+        System.out.println("IN BTC");
+        System.out.println(bloodTestDTO);
         return ResponseEntity.ok(bloodTestService.addNewBloodTest(bloodTestDTO)) ;
     }
 

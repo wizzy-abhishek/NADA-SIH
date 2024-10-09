@@ -2,11 +2,8 @@ package com.ai.aiml10.entity;
 
 import com.ai.aiml10.enums.Role;
 import com.ai.aiml10.utils.PermissionRoleMapping;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,21 +13,27 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Data
-@RequiredArgsConstructor
-@Document(collection = "UserDetails")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "UserDetails")
 public class UserEntity implements UserDetails {
 
     @Id
-    private String id ;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id ;
 
-    @Indexed(unique = true)
+    @Column(unique = true , updatable = false)
     private String email ;
 
     private String password ;
 
+    @Column(updatable = false)
     private String name ;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING )
     private Set<Role> roles ;
 
     @Override

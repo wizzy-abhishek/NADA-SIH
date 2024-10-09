@@ -1,33 +1,42 @@
 package com.ai.aiml10.entity;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @ToString
-@RequiredArgsConstructor
-@Document(collection = "BiologicalPassport")
+@AllArgsConstructor
+@Entity(name = "BiologicalPassport")
 public class BiologicalPassportEntity {
 
     @Id
-    private String passportId;    // Unique identifier for the passport
+    private String passportID;    // Unique identifier for the passport
 
-    private String athleteId;     // Reference to the Athlete
+    private String athletesID;     // Reference to the Athlete
 
-    private List<BloodTestEntity> bloodTests;  // List of blood test results over time
+    @OneToMany( fetch = FetchType.EAGER)
+    @JoinColumn(name = "bloodTests")
+    private Set<BloodTestEntity> bloodTests;  // List of blood test results over time
 
-    private List<UrineTestEntity> urineTests;  // List of urine test results over time
+    @OneToMany( fetch = FetchType.EAGER)
+    @JoinColumn(name = "urineTests")
+    private Set<UrineTestEntity> urineTests;  // List of urine test results over time
 
-    private Date startDate;       // Start date of monitoring
+    private LocalDateTime startDate;       // Start date of monitoring
 
     private Date lastUpdated;     // Last update date
 
     private boolean suspicious;   // Whether the passport flags any suspicious patterns
+
+    public BiologicalPassportEntity() {
+        this.bloodTests = new HashSet<>(5);
+        this.urineTests = new HashSet<>(5);
+    }
 
 }

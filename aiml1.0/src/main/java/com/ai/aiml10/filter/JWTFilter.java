@@ -43,7 +43,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         String token = requestToken.split("Bearer ")[1];
-        String userId = jwtService.getUserIdFromToken(token);
+        Long userId = Long.valueOf(jwtService.getUserIdFromToken(token));
 
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserEntity user = userService.findUserById(userId);

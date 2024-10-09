@@ -1,24 +1,27 @@
 package com.ai.aiml10.dto;
 
 import com.ai.aiml10.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @RequiredArgsConstructor
 @ToString
-public class BloodTestDTO {
+public class BloodTestDTO implements Serializable {
 
     @NotBlank(message = "Blood Test ID cant be blank")
-    private String testId;        // Unique identifier for the test
+    private String testID;        // Unique identifier for the test
 
     @NotBlank(message = "Athletes ID for respective Blood Test is mandatory")
-    private String athleteId;     // Reference to the Athlete
+    private String athletesID;     // Reference to the Athlete
+
+/*    @JsonIgnore
+    private BiologicalPassportEntity biologicalPassport;*/
 
     @NotNull(message = "Blood Test date is required")
     @PastOrPresent(message = "Date of Blood test should be past or present")
@@ -55,6 +58,5 @@ public class BloodTestDTO {
     private double epoLevel;     // Erythropoietin hormone level (mIU/mL)  Normal Range: 4 to 24 mIU/mL
 
     private Status condition;     // Result of the doping test (POSITIVE/NEGATIVE/SUSPICIOUS)
-
 
 }

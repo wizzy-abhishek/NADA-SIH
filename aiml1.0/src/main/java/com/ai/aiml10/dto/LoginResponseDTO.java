@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponseDTO {
 
-    private String id ;
+    private Long id ;
     private String refreshToken ;
     private String accessToken ;
+
 }
