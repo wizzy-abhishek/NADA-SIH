@@ -59,5 +59,4 @@ public class AthleteDTO implements Serializable {
         this.urineTestIds = new HashSet<>(5);
         this.anomalyDetails = new ArrayList<>(5);
     }
-
 }

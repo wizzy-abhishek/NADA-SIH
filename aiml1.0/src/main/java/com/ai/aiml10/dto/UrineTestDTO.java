@@ -21,8 +21,6 @@ public class UrineTestDTO implements Serializable {
     @NotBlank(message = "Urine Test ID cant be blank")
     private String testID;        // Unique identifier for the test
 
-    /* private BiologicalPassportEntity biologicalPassport; */
-
     @NotBlank(message = "Athletes ID for respective Urine Test is mandatory")
     private String athletesID;     // Reference to the Athlete
 

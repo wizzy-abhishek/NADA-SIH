@@ -110,7 +110,8 @@ public class AthleteService {
     @Cacheable(cacheNames = CACHE_NAME , key = "#athletesID")
     public AthleteDTO findAthleteById(String athletesID){
 
-        return modelMapper.map(athleteRepo.findById(athletesID).orElseThrow(() ->new ResourceNotFoundException("Athlete not found with id : " + athletesID) ) , AthleteDTO.class);
+        return modelMapper.map(athleteRepo.findById(athletesID)
+                .orElseThrow(() ->new ResourceNotFoundException("Athlete not found with id : " + athletesID) ) , AthleteDTO.class);
     }
 
     @Transactional
@@ -128,7 +129,6 @@ public class AthleteService {
         return athleteEntityList.stream()
                 .map(athleteEntity -> modelMapper.map(athleteEntity , AthleteDTO.class))
                 .collect(Collectors.toList());
-
     }
 
 }

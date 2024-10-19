@@ -27,5 +27,4 @@ public class APIError {
       this.error = error;
       this.statusCode = statusCode;
    }
-
 }

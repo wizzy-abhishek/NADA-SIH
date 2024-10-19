@@ -83,7 +83,8 @@ public class BloodTestService {
 
     @Transactional
     public BloodTestDTO findBloodTestById(String bloodTestId ){
-        return modelMapper.map(bloodTestRepo.findById(bloodTestId).orElseThrow(() -> new ResourceNotFoundException("Blood test with id : " + bloodTestId + " unavailable")) , BloodTestDTO.class);
+        return modelMapper.map(bloodTestRepo.findById(bloodTestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Blood test with id : " + bloodTestId + " unavailable")) , BloodTestDTO.class);
     }
 
     @Transactional
@@ -94,4 +95,5 @@ public class BloodTestService {
                 .map(bloodTestEntity -> modelMapper.map(bloodTestEntity , BloodTestDTO.class))
                 .collect(Collectors.toList());
     }
+
 }
