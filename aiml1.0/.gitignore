@@ -5,6 +5,11 @@ target/
 !**/src/test/**/target/
 .properties
 
+### Configuration Files ###
+/application.properties  # Ignore the application.properties file in the root directory
+*.properties   # Ignore all properties files
+*.yml          # Ignore all YAML configuration files
+
 ### STS ###
 .apt_generated
 .classpath
@@ -19,6 +24,8 @@ target/
 *.iws
 *.iml
 *.ipr
+*.properties
+*.yml
 
 ### NetBeans ###
 /nbproject/private/
