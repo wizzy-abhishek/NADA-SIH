@@ -31,7 +31,7 @@ public class WebSecurityConfig {
     private final JWTFilter jwtFilter ;
 
     private static final String[] publicRoutes = {
-            "/error" , "/auth/login" , "/auth/refresh"
+            "/error" , "/auth/login" , "/auth/refresh" ,"/actuator/**" , "/mail"
     };
 
     private static final String[] addNewAccounts = {
