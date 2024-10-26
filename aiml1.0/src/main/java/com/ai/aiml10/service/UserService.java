@@ -21,6 +21,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository ;
     private final ModelMapper modelMapper ;
     private final PasswordEncoder passwordEncoder ;
+    private final EmailService emailService ;
 
     @Override
     public UserDetails loadUserByUsername(String username){
@@ -44,6 +45,10 @@ public class UserService implements UserDetailsService {
         toBeCreatedUser.setPassword(passwordEncoder.encode(toBeCreatedUser.getPassword()));
 
         UserEntity savingUser = userRepository.save(toBeCreatedUser);
+        final String subject = "FROM NADA";
+        final String body = "Hello" + signUpDTO.getRoles().toString() + "\n"
+                +"Your welcome at NADA" ;
+        emailService.sendMail(signUpDTO.getEmail() , subject, body);
         return modelMapper.map(savingUser , UserDTO.class);
 
     }

@@ -38,6 +38,9 @@ public class AthleteDTO implements Serializable {
     @NotBlank(message = "Mobile number is required")
     private String mobileNum ;
 
+    @Email(message = "Email problem")
+    private String email ;
+
     private Set<String> bloodTestIds;              // List of blood test IDs4
 
     private Set<String> urineTestIds;              // List of urine test IDs

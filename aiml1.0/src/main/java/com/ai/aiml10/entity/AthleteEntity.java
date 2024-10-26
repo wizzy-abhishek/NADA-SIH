@@ -27,6 +27,8 @@ public class AthleteEntity {
 
     private String mobileNum ;
 
+    private String email ;
+
     @Enumerated(EnumType.STRING)
     private Sport sport ;
 

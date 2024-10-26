@@ -1,5 +1,6 @@
 package com.ai.aiml10.service;
 
+import com.ai.aiml10.controller.EmailController;
 import com.ai.aiml10.dto.AthleteDTO;
 import com.ai.aiml10.entity.AthleteEntity;
 import com.ai.aiml10.entity.BiologicalPassportEntity;
@@ -27,12 +28,14 @@ public class AthleteService {
     private final AthleteRepo athleteRepo;
     private final ModelMapper modelMapper;
     private final BiologicalPassportService biologicalPassportService ;
+    private final EmailService emailService ;
     protected final static String CACHE_NAME = "athlete" ;
 
-    public AthleteService(AthleteRepo athleteRepo, ModelMapper modelMapper, BiologicalPassportService biologicalPassportService) {
+    public AthleteService(AthleteRepo athleteRepo, ModelMapper modelMapper, BiologicalPassportService biologicalPassportService, EmailService emailService) {
         this.athleteRepo = athleteRepo;
         this.modelMapper = modelMapper;
         this.biologicalPassportService = biologicalPassportService;
+        this.emailService = emailService;
     }
 
     public boolean doesExist(String athleteId){
@@ -67,6 +70,11 @@ public class AthleteService {
 
         athleteEntity.setBiologicalPassportId(biologicalPassportEntity.getPassportID());
         AthleteEntity savedEntity = athleteRepo.save(athleteEntity);
+
+        emailService
+                .sendMail(athleteDTO.getEmail() ,
+                        "FROM NADA " ,
+                        "You nada account created \nYour id is : " + athleteDTO.getAthletesID());
 
         return modelMapper.map(savedEntity, AthleteDTO.class);  // Map the saved entity to DTO
     }
